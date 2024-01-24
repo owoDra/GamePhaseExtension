@@ -22,11 +22,15 @@ void UGamePhaseSubsystem::Deinitialize()
 void UGamePhaseSubsystem::AddGamePhaseTag(const FGameplayTag& GamePhaseTag)
 {
 	GamePhaseTagCache.Emplace(GamePhaseTag);
+
+	BroadcastGamePhaseEvent(GamePhaseTag, EGamePhaseEventType::Start);
 }
 
 void UGamePhaseSubsystem::RemoveGamePhaseTag(const FGameplayTag& GamePhaseTag)
 {
 	GamePhaseTagCache.Remove(GamePhaseTag);
+
+	BroadcastGamePhaseEvent(GamePhaseTag, EGamePhaseEventType::End);
 }
 
 const FGameplayTag& UGamePhaseSubsystem::GetLastTransitionGamePhaseTag() const

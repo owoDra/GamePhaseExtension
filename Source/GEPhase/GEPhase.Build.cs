@@ -32,7 +32,7 @@ public class GEPhase : ModuleRules
         PrivateDependencyModuleNames.AddRange(
             new string[]
             {
-                "GameFeatures", "ModularGameplay", "NetCore",
+                "GameFeatures", "ModularGameplay", "GameplayTasks", "NetCore",
             }
         );
     }

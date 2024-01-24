@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "GameplayTaskOwnerInterface.h"
+
 #include "GameplayTagContainer.h"
 
 #include "GamePhase.generated.h"
@@ -22,7 +24,7 @@ class UGamePhaseComponent;
  *	However, the event will still run, so it is possible to track scores and provide feedback to the player.
  */
 UCLASS(Abstract, Blueprintable, BlueprintType)
-class UGamePhase : public UObject
+class GEPHASE_API UGamePhase : public UObject, public IGameplayTaskOwnerInterface
 {
 	GENERATED_BODY()
 public:
@@ -46,6 +48,20 @@ protected:
 
 public:
 	void InitializeGamePhase(AGameStateBase* GameState, UGamePhaseComponent* GamePhaseComponent);
+
+
+	/////////////////////////////////////////////////////////////////////////////////////
+	// IGameplayTaskOwnerInterface
+protected:
+	UPROPERTY(Transient)
+	TArray<TObjectPtr<UGameplayTask>> ActiveTasks;
+
+public:
+	virtual UGameplayTasksComponent* GetGameplayTasksComponent(const UGameplayTask& Task) const override;
+	virtual AActor* GetGameplayTaskOwner(const UGameplayTask* Task) const override;
+	virtual AActor* GetGameplayTaskAvatar(const UGameplayTask* Task) const override;
+	virtual void OnGameplayTaskActivated(UGameplayTask& Task) override;
+	virtual void OnGameplayTaskDeactivated(UGameplayTask& Task) override;
 
 
 	/////////////////////////////////////////////////////////////////////////////////////

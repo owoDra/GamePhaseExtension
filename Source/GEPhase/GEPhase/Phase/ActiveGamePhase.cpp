@@ -180,6 +180,7 @@ void FActiveGamePhaseContainer::HandleGamePhaseAdd(FActiveGamePhase& ActiveGameP
 
 	// Handle start
 
+	ActiveGamePhase.Instance->InitializeGamePhase(Owner.Get(), OwnerComponent.Get());
 	ActiveGamePhase.Instance->HandleGamePhaseStart();
 
 	// Notify subsystem
