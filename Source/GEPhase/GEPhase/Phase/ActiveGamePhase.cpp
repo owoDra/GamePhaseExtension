@@ -78,11 +78,21 @@ bool FActiveGamePhaseContainer::SetGamePhase(const TSubclassOf<UGamePhase>& Game
 	check(Owner);
 	check(OwnerComponent);
 
-	// Suspend if class is not valid
+	// Early out if class is not valid
 
 	if (!GamePhaseClass)
 	{
 		return false;
+	}
+
+	// Early out if phase already started
+
+	for (const auto& Entry : Entries)
+	{
+		if (GamePhaseClass == Entry.Class)
+		{
+			return false;
+		}
 	}
 
 	// End old game phases
@@ -115,6 +125,16 @@ bool FActiveGamePhaseContainer::AddSubPhase(const TSubclassOf<UGamePhase>& GameP
 	if (!InParentPhaseTag.IsValid())
 	{
 		return false;
+	}
+
+	// Early out if phase already started
+
+	for (const auto& Entry : Entries)
+	{
+		if (GamePhaseClass == Entry.Class)
+		{
+			return false;
+		}
 	}
 
 	// create new active sub phase
