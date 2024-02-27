@@ -1,4 +1,4 @@
-// Copyright (C) 2024 owoDra
+﻿// Copyright (C) 2024 owoDra
 
 #include "GamePhaseSubsystem.h"
 
@@ -136,6 +136,24 @@ bool UGamePhaseSubsystem::SetGamePhase(TSubclassOf<UGamePhase> GamePhaseClass)
 		if (auto* Component{ GameState->FindComponentByClass<UGamePhaseComponent>() })
 		{
 			return Component->SetGamePhase(GamePhaseClass);
+		}
+	}
+
+	return false;
+}
+
+bool UGamePhaseSubsystem::EndGamePhase(FGameplayTag GamePhaseTag)
+{
+	if (!GamePhaseTag.IsValid())
+	{
+		return false;
+	}
+
+	if (auto* GameState{ GetWorld()->GetGameState() })
+	{
+		if (auto* Component{ GameState->FindComponentByClass<UGamePhaseComponent>() })
+		{
+			return Component->EndPhaseByTag(GamePhaseTag);
 		}
 	}
 

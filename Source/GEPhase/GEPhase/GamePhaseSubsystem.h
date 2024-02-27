@@ -1,4 +1,4 @@
-// Copyright (C) 2024 owoDra
+﻿// Copyright (C) 2024 owoDra
 
 #pragma once
 
@@ -98,5 +98,8 @@ protected:
 public:
 	UFUNCTION(BlueprintAuthorityOnly, BlueprintCallable, Category = "GamePhase")
 	bool SetGamePhase(TSubclassOf<UGamePhase> GamePhaseClass);
+
+	UFUNCTION(BlueprintAuthorityOnly, BlueprintCallable, Category = "GamePhase")
+	bool EndGamePhase(FGameplayTag GamePhaseTag);
 
 };
