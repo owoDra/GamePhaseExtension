@@ -127,6 +127,8 @@ public:
 
 	bool EndPhaseByTag(const FGameplayTag& InGamePhaseTag);
 
+	TSubclassOf<UGamePhase> GetCurrentGamePhaseClass() const;
+
 protected:
 	void EndAllPhase();
 
@@ -135,7 +137,6 @@ protected:
 
 	void HandleSubPhaseStart(const FGameplayTag& ParentPhaseTag, const FGameplayTag& SubPhaseTag);
 	void HandleSubPhaseEnd(const FGameplayTag& ParentPhaseTag, const FGameplayTag& SubPhaseTag);
-
 };
 
 template<>

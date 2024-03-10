@@ -17,7 +17,7 @@ struct FActiveGamePhaseContainer;
  * Subsystem to track current game phase
  */
 UCLASS()
-class UGamePhaseSubsystem : public UWorldSubsystem
+class GEPHASE_API UGamePhaseSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
 
@@ -101,5 +101,15 @@ public:
 
 	UFUNCTION(BlueprintAuthorityOnly, BlueprintCallable, Category = "GamePhase")
 	bool EndGamePhase(FGameplayTag GamePhaseTag);
+
+
+	////////////////////////////////////////////////////
+	// Game Mode Option
+public:
+	UFUNCTION(BlueprintAuthorityOnly, BlueprintCallable, Category = "GamePhase")
+	virtual bool InitializeFromGameModeOption();
+
+	UFUNCTION(BlueprintCallable, Category = "GamePhase")
+	virtual FString ConstructGameModeOption() const;
 
 };

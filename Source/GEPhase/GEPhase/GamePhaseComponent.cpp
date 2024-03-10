@@ -2,6 +2,8 @@
 
 #include "GamePhaseComponent.h"
 
+#include "GEPhaseLogs.h"
+
 #include "InitState/InitStateTags.h"
 #include "InitState/InitStateComponent.h"
 #include "GFCoreLogs.h"
@@ -10,6 +12,7 @@
 #include "Net/Core/PushModel/PushModel.h"
 #include "Components/GameFrameworkComponentManager.h"
 #include "GameFramework/GameStateBase.h"
+#include "Kismet/GameplayStatics.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(GamePhaseComponent)
 
@@ -235,6 +238,65 @@ bool UGamePhaseComponent::EndPhaseByTag(FGameplayTag InGamePhaseTag)
 	return ActiveGamePhases.EndPhaseByTag(InGamePhaseTag);
 }
 
+TSubclassOf<UGamePhase> UGamePhaseComponent::GetCurrentGamePhaseClass() const
+{
+	return ActiveGamePhases.GetCurrentGamePhaseClass();
+}
+
+
+// Game Mode Option
+
+bool UGamePhaseComponent::InitializeFromGameModeOption()
+{
+	if (!HasAuthority())
+	{
+		return false;
+	}
+
+	auto* GameMode{ GetWorld()->GetAuthGameMode() };
+	if (ensure(GameMode))
+	{
+		auto OptionString{ GameMode->OptionsString };
+
+		UE_LOG(LogGameExt_GamePhase, Log, TEXT("Initialize Game Phase From Game Mode Option"));
+
+		if (UGameplayStatics::HasOption(OptionString, UGamePhaseComponent::NAME_GamePhaseOptionKey))
+		{
+			const auto PhaseClassPathFromOptions{ UGameplayStatics::ParseOption(OptionString, UGamePhaseComponent::NAME_GamePhaseOptionKey) };
+			const auto PhaseClassPath{ FSoftClassPath(PhaseClassPathFromOptions) };
+
+			UE_LOG(LogGameExt_GamePhase, Log, TEXT("| OptionValue: %s"), *PhaseClassPathFromOptions);
+			UE_LOG(LogGameExt_GamePhase, Log, TEXT("| PhaseClass: %s"), *PhaseClassPath.ToString());
+
+			if (auto* PhaseClass{ PhaseClassPath.TryLoadClass<UGamePhase>() })
+			{
+				return SetGamePhase(PhaseClass);
+			}
+		}
+		else
+		{
+			UE_LOG(LogGameExt_GamePhase, Log, TEXT("| No Game Mode Option"));
+		}
+	}
+
+	return false;
+}
+
+FString UGamePhaseComponent::ConstructGameModeOption() const
+{
+	auto PhaseClass{ GetCurrentGamePhaseClass() };
+
+	if (PhaseClass)
+	{
+		FSoftClassPath Path{ PhaseClass };
+		return FString::Printf(TEXT("?%s=%s"), *UGamePhaseComponent::NAME_GamePhaseOptionKey, *Path.GetAssetPathString());
+	}
+
+	return FString();
+}
+
+
+// Utilities
 
 bool UGamePhaseComponent::HasAuthority() const
 {

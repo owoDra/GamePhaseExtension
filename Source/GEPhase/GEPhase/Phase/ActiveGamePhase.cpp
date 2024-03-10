@@ -178,6 +178,20 @@ bool FActiveGamePhaseContainer::EndPhaseByTag(const FGameplayTag& InGamePhaseTag
 	return false;
 }
 
+TSubclassOf<UGamePhase> FActiveGamePhaseContainer::GetCurrentGamePhaseClass() const
+{
+	for (const auto& Entry : Entries)
+	{
+		if (!Entry.ParentPhaseTag.IsValid())
+		{
+			return Entry.Class;
+		}
+	}
+
+	return nullptr;
+}
+
+
 
 void FActiveGamePhaseContainer::EndAllPhase()
 {

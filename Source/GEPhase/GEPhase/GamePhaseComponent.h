@@ -31,6 +31,11 @@ public:
 	//
 	static const FName NAME_GamePhaseReady;
 
+	//
+	// Key name to retrieve value from GameModeOption
+	//
+	inline static const FString NAME_GamePhaseOptionKey{ TEXT("Phase") };
+
 protected:
 	virtual void OnRegister() override;
 	virtual void BeginPlay() override;
@@ -73,6 +78,19 @@ public:
 
 	UFUNCTION(BlueprintAuthorityOnly, BlueprintCallable, Category = "GamePhase")
 	bool EndPhaseByTag(FGameplayTag InGamePhaseTag);
+
+	UFUNCTION(BlueprintCallable, Category = "GamePhase")
+	TSubclassOf<UGamePhase> GetCurrentGamePhaseClass() const;
+
+
+	////////////////////////////////////////////////////
+	// Game Mode Option
+public:
+	UFUNCTION(BlueprintAuthorityOnly, BlueprintCallable, Category = "GamePhase")
+	virtual bool InitializeFromGameModeOption();
+
+	UFUNCTION(BlueprintCallable, Category = "GamePhase")
+	virtual FString ConstructGameModeOption() const;
 
 
 	/////////////////////////////////////////////////////////////////

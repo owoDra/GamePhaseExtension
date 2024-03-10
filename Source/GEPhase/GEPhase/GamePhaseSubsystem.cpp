@@ -19,6 +19,8 @@ void UGamePhaseSubsystem::Deinitialize()
 }
 
 
+// Game Phase Cache
+
 void UGamePhaseSubsystem::AddGamePhaseTag(const FGameplayTag& GamePhaseTag)
 {
 	GamePhaseTagCache.Emplace(GamePhaseTag);
@@ -43,6 +45,8 @@ FGameplayTagContainer UGamePhaseSubsystem::GetGamePhaseTags() const
 	return FGameplayTagContainer::CreateFromArray(GamePhaseTagCache);
 }
 
+
+// Listner
 
 FGamePhaseListenerHandle UGamePhaseSubsystem::RegisterListener(FGameplayTag GamePhaseTag, TFunction<void(FGameplayTag, EGamePhaseEventType)>&& Callback, EGamePhaseTagMatchType MatchType)
 {
@@ -124,6 +128,8 @@ void UGamePhaseSubsystem::BroadcastGamePhaseEvent(FGameplayTag GamePhaseTag, EGa
 }
 
 
+// Utilities
+
 bool UGamePhaseSubsystem::SetGamePhase(TSubclassOf<UGamePhase> GamePhaseClass)
 {
 	if (!GamePhaseClass)
@@ -158,4 +164,33 @@ bool UGamePhaseSubsystem::EndGamePhase(FGameplayTag GamePhaseTag)
 	}
 
 	return false;
+}
+
+
+// Game Mode Option
+
+bool UGamePhaseSubsystem::InitializeFromGameModeOption()
+{
+	auto* GameState{ GetWorld()->GetGameState() };
+	auto* Component{ GameState ? GameState->FindComponentByClass<UGamePhaseComponent>() : nullptr };
+
+	if (Component)
+	{
+		return Component->InitializeFromGameModeOption();
+	}
+
+	return false;
+}
+
+FString UGamePhaseSubsystem::ConstructGameModeOption() const
+{
+	auto* GameState{ GetWorld()->GetGameState() };
+	auto* Component{ GameState ? GameState->FindComponentByClass<UGamePhaseComponent>() : nullptr };
+
+	if (Component)
+	{
+		return Component->ConstructGameModeOption();
+	}
+
+	return FString();
 }
